@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/id_explore"
+        android:checkable="true"
+        android:icon="@drawable/ic_explore"
+        android:title="@string/explore"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/id_recommendation"
+        android:checkable="true"
+        android:icon="@drawable/ic_recommendation"
+        android:title="@string/recommendation"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/id_map"
+        android:checkable="true"
+        android:icon="@drawable/ic_map"
+        android:title="@string/maps"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/id_bookmark"
+        android:checkable="true"
+        android:icon="@drawable/ic_bookmark"
+        android:title="@string/bookmark"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/id_profile"
+        android:checkable="true"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/profile"
+        app:showAsAction="never" />
+
+</menu>
