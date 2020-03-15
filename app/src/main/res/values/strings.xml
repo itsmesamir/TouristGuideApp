@@ -5,7 +5,12 @@
     <string name="maps">Maps</string>
     <string name="bookmark">Bookmark</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile">Profile</string>
+    <string name="exploreName">Explore</string>
+    <string name="famous_places">Famous places</string>
+    <string name="popular">Popular</string>
+    <string name="new_destinations">New destinations</string>
+    <string name="nearby_places">Nearby places</string>
+    <string name="your_wish_list">Your wishlist</string>
 </resources>
