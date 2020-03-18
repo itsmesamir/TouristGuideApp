@@ -13,4 +13,10 @@
     <string name="new_destinations">New destinations</string>
     <string name="nearby_places">Nearby places</string>
     <string name="your_wish_list">Your wishlist</string>
+
+    <string name="was_in_tunnel" translatable="false">was_in_tunnel</string>
+    <string name="was_navigation_stopped" translatable="false">was_navigation_stopped</string>
+
+    //mapbox key
+    <string name="access_token">sk.eyJ1Ijoic2FtaXIxMjMxIiwiYSI6ImNrN3N1angweDAxMnQzaG4xNGJzdGp4YjcifQ.KOB8hYf4GYEYOcMCJogNfA</string>
 </resources>

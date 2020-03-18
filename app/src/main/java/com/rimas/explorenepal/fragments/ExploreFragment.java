@@ -81,7 +81,6 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<PostList>> call, Response<ArrayList<PostList>> response) {
                 postList=response.body();
-               Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                 exploreAdapter.setPostList(postList);
                 if (response.isSuccessful())
                     //Log.e("Success", new Gson().toJson(response.body()));

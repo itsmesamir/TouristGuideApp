@@ -18,6 +18,8 @@ public class PopularApi {
     private static final String Phone_url= "http://192.168.1.70:80/explore/api/explore/";
 
 
+//    private static final String Phone_url= "http://192.168.70.40:80/explore/api/explore/";
+
 
     public static ExploreService exploreService=null;
 

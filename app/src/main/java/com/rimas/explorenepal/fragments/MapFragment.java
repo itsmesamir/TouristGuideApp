@@ -1,78 +1,416 @@
 package com.rimas.explorenepal.fragments;
 
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.icu.text.Transliterator;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.FileUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineCallback;
+import com.mapbox.android.core.location.LocationEngineProvider;
+import com.mapbox.android.core.location.LocationEngineResult;
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.ui.v5.NavigationView;
+import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
+import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
+import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
+import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 import com.rimas.explorenepal.R;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment {
 
-//    MapView mapView;
-//    GoogleMap map;
+public class MapFragment extends Fragment implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener
+        , LocationListener {
+
+
+    private MapView mapView;
+    private MapboxMap mbMap;
+    private PermissionsManager permissionsManager;
+    LocationEngine locationEngine;
+    private LocationLayerPlugin locationLayerPlugin;
+    private Location originLocation;
+    private FloatingActionButton mylocationbutton;
+    private Point originPosition;
+    private Point destinationPosition;
+    private Marker destinationMarker;
+    private Button btnStartNavigation;
+    private DirectionsRoute directionsRoute;
+    private LocationComponent locationComponent;
+    private static final String TAG = "DirectionsActivity";
+    private NavigationMapRoute navigationMapRoute;
+    private LocationManager locationManager;
 
 
     public MapFragment() {
-        // Required empty public constructor
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Mapbox.getInstance(getActivity(), getString(R.string.access_token));
+
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        onLocationChanged(location);
+
+    }
+
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+
+        mbMap = mapboxMap;
+        mbMap.addOnMapClickListener(MapFragment.this);
+        mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                mylocationbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        enableLocationComponent(style);
+                    }
+
+                });
+                enableLocationComponent(style);
+                addDestinationIconLayer(style);
+                //mbMap.addOnMapClickListener(MapFragment.this);
+            }
+
+
+
+
+        });
+
+//        mbMap.addOnMapClickListener(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        return v;
 
         // Gets the MapView from the XML layout and creates it
-//        mapView = (MapView) v.findViewById(R.id.mapview);
+//        mapView = v.findViewById(R.id.mapView);
 //        mapView.onCreate(savedInstanceState);
-//
-//        // Gets to GoogleMap from the MapView and does initialization stuff
-//        map = mapView.getMap();
-//        map.getUiSettings().setMyLocationButtonEnabled(false);
-//        map.setMyLocationEnabled(true);
-//
-//        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
-//        try {
-//            MapsInitializer.initialize(this.getActivity());
-//        } catch (GooglePlayServicesNotAvailableException e) {
-//            e.printStackTrace();
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mapView=view.findViewById(R.id.mapView);
+        mylocationbutton= view.findViewById(R.id.myLocationButton);
+        mapView.onCreate(savedInstanceState);
+        mapView.onCreate(savedInstanceState);
+        btnStartNavigation=view.findViewById(R.id.btnStartNavigation);
+        btnStartNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean simulateRoute = true;
+
+                // Create a NavigationLauncherOptions object to package everything together
+                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                        .directionsRoute(directionsRoute)
+                        .shouldSimulateRoute(simulateRoute)
+                        .build();
+
+                // Call this method with Context from within an Activity
+                NavigationLauncher.startNavigation(getActivity(), options);
+
+
+            }
+
+
+        });
+
+
+        mapView.getMapAsync(this);
+
+    }
+
+    private void addDestinationIconLayer(Style style) {
+        style.addImage("destination-icon-id",
+                BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default));
+        GeoJsonSource geoJsonSource = new GeoJsonSource("destination-source-id");
+        style.addSource(geoJsonSource);
+        SymbolLayer destinationSymbolLayer = new SymbolLayer("destination-symbol-layer-id", "destination-source-id");
+        destinationSymbolLayer.withProperties(
+                iconImage("destination-icon-id"),
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true));
+
+        style.addLayer(destinationSymbolLayer);
+    }
+    private void enableLocationComponent(@NonNull Style style) {
+
+
+
+        // Check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(this.getActivity())) {
+
+
+// Get an instance of the LocationComponent.
+            LocationComponent locationComponent = mbMap.getLocationComponent();
+
+// Activate the LocationComponent
+            locationComponent.activateLocationComponent(
+                    LocationComponentActivationOptions.builder(this.getActivity(), style).build());
+
+// Enable the LocationComponent so that it's actually visible on the map
+            locationComponent.setLocationComponentEnabled(true);
+
+// Set the LocationComponent's camera mode
+            locationComponent.setCameraMode(CameraMode.TRACKING);
+
+// Set the LocationComponent's render mode
+            locationComponent.setRenderMode(RenderMode.NORMAL);
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this.getActivity());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain) {
+
+        Toast.makeText(this.getActivity(), "Explanation", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if (granted) {
+            mbMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    enableLocationComponent(style);
+                }
+            });
+        } else {
+            Toast.makeText(this.getActivity(), "Permission not granted", Toast.LENGTH_SHORT).show();
+             this.getActivity().finish();
+        }
+
+    }
+
+
+
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+
+        //destinationMarker= mbMap.addMarker(new MarkerOptions().position(point));
+
+
+        Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
+        Point originPoint = Point.fromLngLat(originLocation.getLongitude(), originLocation.getLatitude());
+//        Point originPoint = Point.fromLngLat(longitude, 26.6646);
+
+        GeoJsonSource source = mbMap.getStyle().getSourceAs("destination-source-id");
+        if (source != null) {
+            source.setGeoJson(Feature.fromGeometry(destinationPoint));
+        }
+////
+        getRoute(originPoint, destinationPoint);
+        btnStartNavigation.setEnabled(true);
+        btnStartNavigation.setBackgroundResource(R.color.mapboxBlue);
+        return true;
+    }
+
+    private void getRoute(Point originPoint, Point destinationPoint) {
+
+        NavigationRoute.builder(this.getActivity())
+                .accessToken(Mapbox.getAccessToken())
+                .origin(originPoint)
+                .destination(destinationPoint)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        Log.d(TAG, "Response code: " + response.code());
+                        if (response.body() == null) {
+                            Log.e(TAG, "No routes found, make sure you set the right user and access token.");
+                            return;
+                        } else if (response.body().routes().size() == 0) {
+                            Log.e(TAG, "No routes found");
+                            return;
+                        }
+
+                        directionsRoute = response.body().routes().get(0);
+
+                        // Draw the route on the map
+                        if (navigationMapRoute != null) {
+                            navigationMapRoute.removeRoute();
+                        } else {
+                            navigationMapRoute = new NavigationMapRoute(null, mapView, mbMap, R.style.NavigationMapRoute);
+                        }
+                        navigationMapRoute.addRoute(directionsRoute);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                        Log.e(TAG, "Error: " + t.getMessage());
+
+                    }
+                });
+    }
+
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+//        if(location!= null){
+            originLocation= location;
+//            setCameraPosition(location);
 //        }
-//
-//        // Updates the location and zoom of the MapView
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-//        map.animateCamera(cameraUpdate);
-//
-//        return v;
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        mapView.onResume();
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        mapView.onDestroy();
-//    }
-//
-//    @Override
-//    public void onLowMemory() {
-//        super.onLowMemory();
-//        mapView.onLowMemory();
+
+
+        double longitude= originLocation.getLongitude();
+        double latitude= originLocation.getLatitude();
+        Log.d("lat",String.valueOf(latitude));
+        Log.d("long",String.valueOf(longitude));
+    }
+    private void setCameraPosition(Location location){
+        mbMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13.0));
+
+    }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mapView.onDestroy();
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
 }
