@@ -19,4 +19,5 @@
 
     //mapbox key
     <string name="access_token">sk.eyJ1Ijoic2FtaXIxMjMxIiwiYSI6ImNrN3N1angweDAxMnQzaG4xNGJzdGp4YjcifQ.KOB8hYf4GYEYOcMCJogNfA</string>
+    <string name="explore_nepal">Explore Nepal</string>
 </resources>

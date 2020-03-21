@@ -4,58 +4,33 @@ package com.rimas.explorenepal.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PostList {
-//    private int userId;
-//
-//    private int id;
-//
-//    private String title;
-//
-//    @SerializedName("body")
-//    private String text;
-//
-//    public PostList(String title, String text) {
-//        this.title = title;
-//        this.text = text;
-//    }
-//
-//    public int getUserId() {
-//        return userId;
-//    }
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public String getName() {
-//        return title;
-//    }
-//
-//    public String getLocation() {
-//        return text;
-//    }
-
-    @SerializedName("id")
+public class PostList {@SerializedName("id")
 
 
 
-    @Expose
-    private String id;
+@Expose
+private String id;
+
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("location")
     @Expose
     private String location;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("lat")
     @Expose
-    private String lat;
+    private Double lat;
+
     @SerializedName("long")
     @Expose
-    private String _long;
+    private Double _long;
+
     @SerializedName("image")
     @Expose
     private String image;
@@ -93,19 +68,19 @@ public class PostList {
         this.description = description;
     }
 
-    public String getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public String getLong() {
+    public Double getLong() {
         return _long;
     }
 
-    public void setLong(String _long) {
+    public void setLong(Double _long) {
         this._long = _long;
     }
 
@@ -115,6 +90,7 @@ public class PostList {
 
     public void setImage(String image) {
         this.image = image;
+
     }
 
 

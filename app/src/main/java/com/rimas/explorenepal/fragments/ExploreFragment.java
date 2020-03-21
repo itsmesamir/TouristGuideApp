@@ -2,6 +2,7 @@ package com.rimas.explorenepal.fragments;
 
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -26,6 +28,8 @@ import com.rimas.explorenepal.model.PostList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +47,8 @@ public class ExploreFragment extends Fragment {
     PopularAdapter popularAdapter;
     ExploreAdapter exploreAdapter;
 
+    ImageButton bookmark_button;
+
     public ExploreFragment() {
         // Required empty public constructor
     }
@@ -52,6 +58,8 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_explore, container, false);
+
+        progressDialogManager();
         //exploreAdapter= new ExploreAdapter();
         recyclerView=v.findViewById(R.id.exploreRecyclerView);
         LinearLayoutManager llm = new LinearLayoutManager((ExploreFragment.this.getContext()));
@@ -69,9 +77,25 @@ public class ExploreFragment extends Fragment {
         popularRecyclerView.setAdapter(popularAdapter);
         getPopularData();
 
-        return v;
+        return  v;
 
 
+    }
+
+    private void progressDialogManager() {
+
+        ProgressDialog progressDialog= new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                //delayInMillis=4000;
+            }
+        }, 4000);
     }
 
     public void getExploreData(){

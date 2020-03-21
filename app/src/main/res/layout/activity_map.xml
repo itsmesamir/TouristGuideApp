@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MapFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:mapbox_cameraTargetLat="26.6646"
+            app:mapbox_cameraTargetLng="87.2718"
+            app:mapbox_cameraZoom="12"
+            >
+
+        </com.mapbox.mapboxsdk.maps.MapView>
+
+        <Button
+            android:id="@+id/btnStartNavigation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/button"
+            android:enabled="false"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="20dp"
+            android:text="Start Navigating"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mapView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/myLocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="25dp"
+            android:src="@drawable/ic_my_location"
+            android:backgroundTint="@color/colorAccent"
+            app:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:pressedTranslationZ="12dp"
+            android:layout_marginRight="25dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

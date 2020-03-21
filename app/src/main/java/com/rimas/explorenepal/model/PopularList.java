@@ -12,21 +12,27 @@ public class PopularList {
 
     @Expose
     private String id;
+
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("location")
     @Expose
     private String location;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("lat")
     @Expose
-    private String lat;
+    private Double lat;
+
     @SerializedName("long")
     @Expose
-    private String _long;
+    private Double _long;
+
     @SerializedName("image")
     @Expose
     private String image;
@@ -64,19 +70,19 @@ public class PopularList {
         this.description = description;
     }
 
-    public String getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public String getLong() {
+    public Double getLong() {
         return _long;
     }
 
-    public void setLong(String _long) {
+    public void setLong(Double _long) {
         this._long = _long;
     }
 

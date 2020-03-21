@@ -10,6 +10,7 @@
 
     <androidx.cardview.widget.CardView
         style="@style/CardView.Light"
+        android:id="@+id/exploreCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

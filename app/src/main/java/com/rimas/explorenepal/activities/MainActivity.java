@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         navigation();
 
     }
-    private void navigation(){
+    public void navigation(){
 
         bottomNavigationView= findViewById(R.id.bottomNavigationView);
 
