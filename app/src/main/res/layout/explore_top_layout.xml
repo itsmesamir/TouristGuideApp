@@ -35,19 +35,19 @@
 
 
         <ImageButton
-            android:id="@+id/bookmark_button1"
+            android:id="@+id/exploreBookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             android:background="#00FFFFFF"
             android:padding="5dp"
-            app:layout_constraintEnd_toStartOf="@+id/btnExploreMap"
-            app:layout_constraintTop_toTopOf="@+id/btnExploreMap"
+            app:layout_constraintEnd_toStartOf="@+id/exploreMap"
+            app:layout_constraintTop_toTopOf="@+id/exploreMap"
             app:srcCompat="@drawable/ic_bookmark"
             tools:ignore="VectorDrawableCompat" />
 
         <ImageButton
-            android:id="@+id/btnExploreMap"
+            android:id="@+id/exploreMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"

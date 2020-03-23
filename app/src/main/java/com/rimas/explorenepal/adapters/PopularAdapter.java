@@ -60,10 +60,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
         holder.popularName.setText(popularList.getName());
         holder.popularLocation.setText(popularList.getLocation());
         holder.popularDescription.setText(popularList.getDescription());
-//        Log.e("Name is " , String.valueOf(postList.getName()));
-//        holder.name.setText("samir");
-//        holder.location.setText("Sagarmatha");
-//        Log.e("URL is :" , postList.getImage());
 
         Glide.with(holder.popularImage.getContext())
                 .load(Uri.parse(popularList.getImage()))

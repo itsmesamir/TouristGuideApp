@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/bookmark_button"
+            android:id="@+id/btnBookmark"
             android:layout_width="25dp"
             android:layout_height="50dp"
             android:layout_marginEnd="8dp"
@@ -31,7 +31,7 @@
             tools:ignore="VectorDrawableCompat" />
 
         <TextView
-            android:id="@+id/primary_text"
+            android:id="@+id/txtName"
             android:layout_width="112dp"
             android:layout_height="27dp"
             android:layout_marginStart="16dp"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/sub_text"
+            android:id="@+id/txtLocation"
             android:layout_width="143dp"
             android:layout_height="27dp"
             android:layout_marginStart="16dp"
@@ -56,10 +56,10 @@
             android:textColor="#8A000000"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/media_image"
-            app:layout_constraintTop_toBottomOf="@+id/primary_text" />
+            app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
         <TextView
-            android:id="@+id/description_text"
+            android:id="@+id/txtDescription"
             android:layout_width="143dp"
             android:layout_height="27dp"
             android:layout_marginStart="16dp"
@@ -68,10 +68,10 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#8A000000"
             app:layout_constraintStart_toEndOf="@+id/media_image"
-            app:layout_constraintTop_toBottomOf="@+id/sub_text" />
+            app:layout_constraintTop_toBottomOf="@+id/txtLocation" />
 
         <ImageView
-            android:id="@+id/media_image"
+            android:id="@+id/bookmark_image"
             android:layout_width="177dp"
             android:layout_height="153dp"
             android:adjustViewBounds="true"
@@ -81,7 +81,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/favorite_button"
+            android:id="@+id/btnFavourite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00FFFFFF"
@@ -94,7 +94,7 @@
             tools:ignore="VectorDrawableCompat" />
 
         <ImageButton
-            android:id="@+id/share_button"
+            android:id="@+id/btnLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00FFFFFF"

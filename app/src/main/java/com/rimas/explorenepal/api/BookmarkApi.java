@@ -1,5 +1,7 @@
 package com.rimas.explorenepal.api;
 
+import com.rimas.explorenepal.model.BookmarkList;
+import com.rimas.explorenepal.model.BookmarkList_Data;
 import com.rimas.explorenepal.model.ExplorePost;
 import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.PostList;
@@ -12,7 +14,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
-public class ExploreApi {
+public class BookmarkApi {
     private static final String url= "http://10.0.2.2:80/explore/api/explore/";
     private static final String base_url = "https://jsonplaceholder.typicode.com/";
     private static final String Phone_url= "http://192.168.1.70:80/explore/api/explore/";
@@ -40,13 +42,10 @@ public class ExploreApi {
 
     public interface ExploreService{
 
-        @GET("read.php")
-        Call<List<PostList>> getPostList();
+        @GET("readBookmarkData.php")
+        Call<ArrayList<BookmarkList_Data>> getData();
 //        @GET("posts")
 //        Call<ArrayList<PostList>> getPostList();
-
-        @GET("readPopularData.php")
-        Call<ArrayList<PopularList>> getPopularList();
 
     }
 }

@@ -1,16 +1,13 @@
 package com.rimas.explorenepal.model;
 
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PopularList {
-
+public class BookmarkList_Data {
 
     @SerializedName("id")
-
-
-
-    @Expose
     private int id;
 
     @SerializedName("name")
@@ -93,8 +90,4 @@ public class PopularList {
     public void setImage(String image) {
         this.image = image;
     }
-
-
-
 }
-

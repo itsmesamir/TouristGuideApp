@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.rimas.explorenepal.Database.BookmarkDatabase;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.adapters.ExploreAdapter;
 import com.rimas.explorenepal.adapters.PopularAdapter;
@@ -41,11 +43,13 @@ import retrofit2.Response;
  */
 public class ExploreFragment extends Fragment {
 
-    public ArrayList<PostList > postList;
+    public List<PostList > postList;
     public ArrayList<PopularList> popularList;
     RecyclerView recyclerView, popularRecyclerView;
     PopularAdapter popularAdapter;
     ExploreAdapter exploreAdapter;
+
+    public static BookmarkDatabase bookmarkDatabase;
 
     ImageButton bookmark_button;
 
@@ -75,6 +79,8 @@ public class ExploreFragment extends Fragment {
         popularRecyclerView.setLayoutManager(linearLayoutManager);
         popularAdapter = new PopularAdapter(getActivity(),popularList);
         popularRecyclerView.setAdapter(popularAdapter);
+        bookmarkDatabase= Room.databaseBuilder(getContext(), BookmarkDatabase.class,"bookmark_data").allowMainThreadQueries().build();
+
         getPopularData();
 
         return  v;
@@ -100,10 +106,10 @@ public class ExploreFragment extends Fragment {
 
     public void getExploreData(){
 
-        Call<ArrayList<PostList>> explorePostCall= ExploreApi.getExploreService().getPostList();
-        explorePostCall.enqueue(new Callback<ArrayList<PostList>>() {
+        Call<List<PostList>> explorePostCall= ExploreApi.getExploreService().getPostList();
+        explorePostCall.enqueue(new Callback<List<PostList>>() {
             @Override
-            public void onResponse(Call<ArrayList<PostList>> call, Response<ArrayList<PostList>> response) {
+            public void onResponse(Call<List<PostList>> call, Response<List<PostList>> response) {
                 postList=response.body();
                 exploreAdapter.setPostList(postList);
                 if (response.isSuccessful())
@@ -114,7 +120,7 @@ public class ExploreFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<PostList>> call, Throwable t) {
+            public void onFailure(Call<List<PostList>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Error in response", Toast.LENGTH_SHORT).show();
                 Log.e("failure", String.valueOf(t.getCause()));
 

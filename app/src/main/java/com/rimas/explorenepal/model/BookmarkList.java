@@ -1,40 +1,34 @@
 package com.rimas.explorenepal.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class PopularList {
-
-
-    @SerializedName("id")
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 
+@Entity(tableName = "bookmark")
+public class BookmarkList {
 
-    @Expose
+    @PrimaryKey
+    @NonNull
     private int id;
 
-    @SerializedName("name")
-    @Expose
+    @ColumnInfo(name = "name")
     private String name;
 
-    @SerializedName("location")
-    @Expose
+    @ColumnInfo(name = "location")
     private String location;
 
-    @SerializedName("description")
-    @Expose
+    @ColumnInfo(name = "description")
     private String description;
 
-    @SerializedName("lat")
-    @Expose
+    @ColumnInfo(name = "lat")
     private Double lat;
 
-    @SerializedName("long")
-    @Expose
+    @ColumnInfo(name = "_long")
     private Double _long;
 
-    @SerializedName("image")
-    @Expose
+    @ColumnInfo(name = "image")
     private String image;
 
 
@@ -93,8 +87,4 @@ public class PopularList {
     public void setImage(String image) {
         this.image = image;
     }
-
-
-
 }
-
