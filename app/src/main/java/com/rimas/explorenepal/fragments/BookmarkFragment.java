@@ -63,7 +63,7 @@ public class BookmarkFragment extends Fragment {
         recyclerView.setAdapter(bookmarkAdapter);
         getBookmarkData();
 
-        bookmarkDatabase= Room.databaseBuilder(getContext(), BookmarkDatabase.class,"bookmark_data").allowMainThreadQueries().build();
+//        bookmarkDatabase= Room.databaseBuilder(getContext(), BookmarkDatabase.class,"bookmark_data").allowMainThreadQueries().build();
 
         return v;
     }

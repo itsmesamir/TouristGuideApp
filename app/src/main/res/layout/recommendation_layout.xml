@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardView.Light"
     android:layout_width="match_parent"
+    android:id="@+id/recCard"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="0dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     app:cardCornerRadius="6dp"
@@ -14,12 +15,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp">
 
         <TextView
-            android:id="@+id/primary_text"
-            android:layout_width="112dp"
-            android:layout_height="27dp"
+            android:id="@+id/txtRecommendationName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
@@ -27,39 +30,45 @@
             android:textSize="17sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="#DE000000"
-            app:layout_constraintStart_toEndOf="@+id/media_image"
+            app:layout_constraintStart_toEndOf="@+id/recommendationImage"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/sub_text"
-            android:layout_width="143dp"
-            android:layout_height="27dp"
+            android:id="@+id/txtRecommendationLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
             android:text="Location"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#8A000000"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/media_image"
-            app:layout_constraintTop_toBottomOf="@+id/primary_text" />
+            android:textColor="#000000"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@+id/recommendationImage"
+            app:layout_constraintTop_toBottomOf="@+id/txtRecommendationName" />
 
         <TextView
-            android:id="@+id/description_text"
-            android:layout_width="143dp"
-            android:layout_height="27dp"
+            android:id="@+id/txtRecommendationDescription"
+            android:layout_width="165dp"
+            android:layout_height="84dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
+            android:ellipsize="end"
+            android:maxLines="6"
+            android:textSize="11sp"
             android:text="Description"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#8A000000"
-            app:layout_constraintStart_toEndOf="@+id/media_image"
-            app:layout_constraintTop_toBottomOf="@+id/sub_text" />
+            app:layout_constraintStart_toEndOf="@+id/recommendationImage"
+            app:layout_constraintTop_toBottomOf="@+id/txtRecommendationLocation" />
 
         <ImageView
-            android:id="@+id/media_image"
-            android:layout_width="177dp"
-            android:layout_height="153dp"
+            android:id="@+id/recommendationImage"
+            android:layout_width="154dp"
+            android:layout_height="112dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/leaf"
@@ -67,7 +76,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/favorite_button"
+            android:id="@+id/btnRecommendationFavourite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -77,15 +86,15 @@
             android:background="#00FFFFFF"
             android:clickable="true"
             android:focusable="true"
-            android:padding="12dp"
-            app:layout_constraintEnd_toStartOf="@+id/bookmark_button"
+            android:padding="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/btnRecommendationBookmark"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bookmark_button"
+            app:layout_constraintTop_toTopOf="@+id/btnRecommendationBookmark"
             app:srcCompat="@drawable/ic_favorite"
             tools:ignore="VectorDrawableCompat" />
 
         <ImageButton
-            android:id="@+id/bookmark_button"
+            android:id="@+id/btnRecommendationBookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -93,15 +102,15 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="#00FFFFFF"
-            android:padding="12dp"
-            app:layout_constraintEnd_toStartOf="@+id/share_button"
-            app:layout_constraintStart_toEndOf="@+id/favorite_button"
-            app:layout_constraintTop_toTopOf="@+id/share_button"
+            android:padding="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/btnRecommendationLocation"
+            app:layout_constraintStart_toEndOf="@+id/btnRecommendationFavourite"
+            app:layout_constraintTop_toTopOf="@+id/btnRecommendationLocation"
             app:srcCompat="@drawable/ic_bookmark"
             tools:ignore="VectorDrawableCompat" />
 
         <ImageButton
-            android:id="@+id/share_button"
+            android:id="@+id/btnRecommendationLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -109,11 +118,11 @@
             android:layout_marginEnd="250dp"
             android:layout_marginRight="250dp"
             android:background="#00FFFFFF"
-            android:padding="12dp"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bookmark_button"
-            app:layout_constraintTop_toBottomOf="@+id/media_image"
+            app:layout_constraintStart_toEndOf="@+id/btnRecommendationBookmark"
+            app:layout_constraintTop_toBottomOf="@+id/recommendationImage"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/ic_place"
             tools:ignore="VectorDrawableCompat" />

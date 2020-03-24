@@ -66,7 +66,39 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
                 .placeholder(holder.popularImage.getDrawable())
                 .into(holder.popularImage);
 
-        cardView.setOnClickListener(new View.OnClickListener() {
+        holder.popularImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", popularList.getName());
+                intent.putExtra("imageDescription", popularList.getDescription());
+                intent.putExtra("imageLocation", popularList.getLocation());
+                intent.putExtra("image", popularList.getImage());
+                context.startActivity(intent);
+            }
+        });holder.popularName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", popularList.getName());
+                intent.putExtra("imageDescription", popularList.getDescription());
+                intent.putExtra("imageLocation", popularList.getLocation());
+                intent.putExtra("image", popularList.getImage());
+                context.startActivity(intent);
+            }
+        });
+        holder.popularLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", popularList.getName());
+                intent.putExtra("imageDescription", popularList.getDescription());
+                intent.putExtra("imageLocation", popularList.getLocation());
+                intent.putExtra("image", popularList.getImage());
+                context.startActivity(intent);
+            }
+        });
+        holder.popularDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(context, Details.class);

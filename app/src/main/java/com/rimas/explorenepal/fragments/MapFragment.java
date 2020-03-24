@@ -100,6 +100,8 @@ public class MapFragment extends Fragment implements PermissionsListener, OnMapR
     private static final String TAG = "DirectionsActivity";
     private NavigationMapRoute navigationMapRoute;
     private LocationManager locationManager;
+    public static double latitude;
+    public static double longitude;
 
 
     public MapFragment() {
@@ -348,8 +350,8 @@ public class MapFragment extends Fragment implements PermissionsListener, OnMapR
 //        }
 
 
-        double longitude= originLocation.getLongitude();
-        double latitude= originLocation.getLatitude();
+        longitude= originLocation.getLongitude();
+         latitude= originLocation.getLatitude();
         Log.d("lat",String.valueOf(latitude));
         Log.d("long",String.valueOf(longitude));
     }
