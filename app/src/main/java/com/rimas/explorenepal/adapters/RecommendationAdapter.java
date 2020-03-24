@@ -211,7 +211,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                         public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
 
                             Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
-                            Log.e("failureee", String.valueOf(t.getCause()));
+                            Log.e("failure", String.valueOf(t.getCause()));
 
                         }
                     });
