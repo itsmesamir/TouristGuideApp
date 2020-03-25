@@ -99,11 +99,6 @@ public class BookmarkFragment extends Fragment {
             public void onResponse(Call<ArrayList<FavouriteList>> call, Response<ArrayList<FavouriteList>> response) {
                 bookmarkLists=response.body();
                 bookmarkAdapter.setPostList(bookmarkLists);
-                if (response.isSuccessful())
-                    //Log.e("Success", new Gson().toJson(response.body()));
-                    Log.e("Success",new Gson().toJson(bookmarkLists.get(1)));
-                else
-                    Log.e("unSuccess", new Gson().toJson(response.errorBody()));
 
             }
 

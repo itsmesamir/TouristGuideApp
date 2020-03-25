@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,16 +26,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.Map;
+import com.rimas.explorenepal.api.BookmarkApi;
 import com.rimas.explorenepal.api.ExploreApi;
 import com.rimas.explorenepal.api.RecommendationApi;
 import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
+import com.rimas.explorenepal.model.FavouriteList;
 import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.RecommendationList;
+import com.rimas.explorenepal.model.SinglePost;
 
 import java.util.ArrayList;
 
@@ -54,8 +59,11 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     RecommendationApi recommendationApi;
     boolean value=true;
 
+    ImageButton btnBookmark, btnFavourite;
+
 
     private ArrayList<RecommendationList> recommendationLists;
+    private ArrayList<SinglePost> favouriteLists;
     public RecommendationAdapter( Context context, ArrayList<RecommendationList> recommendationLists){
         this.context=context;
         this.recommendationLists= recommendationLists;
@@ -71,6 +79,11 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     public RecommendationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater= LayoutInflater.from(context);
         View view= layoutInflater.inflate(R.layout.recommendation_layout, parent,false);
+
+        btnBookmark=view.findViewById(R.id.btnRecommendationBookmark);
+        btnFavourite=view.findViewById(R.id.btnRecommendationFavourite);
+
+
 
         btnMap=view.findViewById(R.id.btnMapBk);
         cardView= view.findViewById(R.id.recCard);
@@ -104,6 +117,39 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     public void onBindViewHolder(@NonNull RecommendationViewHolder holder, int position) {
 
         RecommendationList recommendationList = recommendationLists.get(position);
+        holder.btnBookmark.setTag("R.drawable.ic_bookmark");
+
+        Call<ArrayList<SinglePost>> selectCall= BookmarkApi.getExploreService().getSingleData();
+        selectCall.enqueue(new Callback<ArrayList<SinglePost>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SinglePost>> call, Response<ArrayList<SinglePost>> response) {
+                favouriteLists=response.body();
+
+                for(int i=0; i<favouriteLists.size();i++){
+
+                    if (recommendationList.getId()==favouriteLists.get(i).getId()){
+
+                        holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
+                        holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+
+                    }
+
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SinglePost>> call, Throwable t) {
+
+                Toast.makeText(context, "No posts", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
         LatLng latLngA = new LatLng(latitude, longitude);
@@ -192,15 +238,11 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                 @Override
                 public void onClick(View v) {
 
-                   if(value){
-                       value=false;
+
+
+                   if(holder.btnBookmark.getTag().equals("R.drawable.ic_bookmark")){
+                       holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
                        Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show();
-//                    String name= recommendationList.getName();
-//                    String location= recommendationList.getLocation();
-//                    String description= recommendationList.getDescription();
-//                    Double lat= recommendationList.getLat();
-//                    Double longitude= recommendationList.getLong();
-//                    String image= recommendationList.getImage();
 
                        holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
                        Call<BookmarkList_Data> newCall = RecommendationApi.getExploreService().savePost(recommendationList.getId(),recommendationList.getName(),recommendationList.getLocation()
@@ -214,15 +256,15 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                            @Override
                            public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
 
-                               Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
-                               Log.e("failure", String.valueOf(t.getCause()));
+//                               Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
+//                               Log.e("failure", String.valueOf(t.getCause()));
 
                            }
                        });
 
                    }
                    else{
-                       value=true;
+                       holder.btnBookmark.setTag("R.drawable.ic_bookmark");
 
                        Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show();
 
@@ -233,14 +275,14 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                            @Override
                            public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
 
-                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+//                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
 
                            }
 
                            @Override
                            public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
 
-                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
+//                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
 
 
                            }
@@ -257,21 +299,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
 
             });
-
-
-//            Call<ArrayList<RecommendationList>> newCall= RecommendationApi.getExploreService().getRecommendationList();
-//            newCall.enqueue(new Callback<ArrayList<RecommendationList>>() {
-//                @Override
-//                public void onResponse(Call<ArrayList<RecommendationList>> call, Response<ArrayList<RecommendationList>> response) {
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ArrayList<RecommendationList>> call, Throwable t) {
-//
-//                }
-//            });
-
 
 
         }

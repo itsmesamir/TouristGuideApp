@@ -1,11 +1,12 @@
 package com.rimas.explorenepal.adapters;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +30,9 @@ import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.MainActivity;
 import com.rimas.explorenepal.activities.Map;
+import com.rimas.explorenepal.api.RecommendationApi;
+import com.rimas.explorenepal.fragments.BookmarkFragment;
+import com.rimas.explorenepal.fragments.ExploreFragment;
 import com.rimas.explorenepal.fragments.MapFragment;
 import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
@@ -39,7 +43,9 @@ import com.rimas.explorenepal.model.PostList;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder> {
@@ -48,7 +54,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.Bookma
     private List<FavouriteList> bookmarkList;
     CardView cardView;
 //    ImageButton btnLocation;
-    Fragment MapFragment;
+    Fragment selectedFragment;
 
     public BookmarkAdapter(Context context, List<FavouriteList> bookmarkList){
         this.context = context;
@@ -96,6 +102,43 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.Bookma
                 .load(Uri.parse(favouriteList.getImage()))
                 .placeholder(holder.bookmark_image.getDrawable())
                 .into(holder.bookmark_image);
+
+
+        holder.btnBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show();
+
+                holder.btnBookmark.setImageResource(R.drawable.ic_bookmark);
+
+                retrofit2.Call<BookmarkList_Data> deleteData= RecommendationApi.getExploreService().deletePost(favouriteList.getId());
+                deleteData.enqueue(new Callback<BookmarkList_Data>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+
+//                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+
+//                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+
+                AppCompatActivity activity = (AppCompatActivity)v.getContext();
+                activity.getFragmentManager().findFragmentById(R.id.fragmentBookmark);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBookmark, new BookmarkFragment()).commit();
+
+
+
+            }
+        });
 
 
 

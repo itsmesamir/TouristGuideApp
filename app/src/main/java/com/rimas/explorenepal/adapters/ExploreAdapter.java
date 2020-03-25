@@ -11,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,13 +37,22 @@ import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.MainActivity;
 import com.rimas.explorenepal.activities.Map;
+import com.rimas.explorenepal.api.BookmarkApi;
+import com.rimas.explorenepal.api.RecommendationApi;
 import com.rimas.explorenepal.fragments.ExploreFragment;
 import com.rimas.explorenepal.fragments.MapFragment;
 import com.rimas.explorenepal.model.BookmarkList;
+import com.rimas.explorenepal.model.BookmarkList_Data;
 import com.rimas.explorenepal.model.PostList;
+import com.rimas.explorenepal.model.RecommendationList;
+import com.rimas.explorenepal.model.SinglePost;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ExploreViewHolder> implements LocationListener {
 
@@ -56,6 +64,9 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ExploreV
     private LocationManager locationManager;
     double distance;
     private double latitude, longitude;
+
+    private List<RecommendationList> recommendationLists;
+    private ArrayList<SinglePost> favouriteLists;
 
 
     public ExploreAdapter(Context context, List<PostList> postLists) {
@@ -109,6 +120,39 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ExploreV
     public void onBindViewHolder(@NonNull ExploreViewHolder holder, int position) {
         PostList postList=postLists.get(position);
         int id= postList.getId();
+        holder.btnBookmark.setTag("R.drawable.ic_bookmark");
+
+        Call<ArrayList<SinglePost>> selectCall= BookmarkApi.getExploreService().getSingleData();
+        selectCall.enqueue(new Callback<ArrayList<SinglePost>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SinglePost>> call, Response<ArrayList<SinglePost>> response) {
+                favouriteLists=response.body();
+
+                for(int i=0; i<favouriteLists.size();i++){
+
+                    if (postList.getId()==favouriteLists.get(i).getId()){
+
+                        holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
+                        holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+
+                    }
+
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SinglePost>> call, Throwable t) {
+
+                Toast.makeText(context, "No posts", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
            holder.name.setText(postList.getName());
            holder.location.setText(postList.getLocation());
@@ -181,6 +225,72 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ExploreV
 //                mapFragment.setArguments(bundle);
 
             }
+        });
+
+        holder.btnBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                if(holder.btnBookmark.getTag().equals("R.drawable.ic_bookmark")){
+                    holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
+                    Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show();
+
+                    holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+                    retrofit2.Call<BookmarkList_Data> newCall = RecommendationApi.getExploreService().savePost(postList.getId(),postList.getName(),postList.getLocation()
+                            ,postList.getDescription(),postList.getLat(), postList.getLong(), postList.getImage());
+                    newCall.enqueue(new Callback<BookmarkList_Data>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+                            Toast.makeText(context, "Success in inserting babe", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(retrofit2.Call<BookmarkList_Data> call, Throwable t) {
+
+//                               Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
+//                               Log.e("failure", String.valueOf(t.getCause()));
+
+                        }
+                    });
+
+                }
+                else{
+                    holder.btnBookmark.setTag("R.drawable.ic_bookmark");
+
+                    Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show();
+
+                    holder.btnBookmark.setImageResource(R.drawable.ic_bookmark);
+
+                    retrofit2.Call<BookmarkList_Data> deleteData= RecommendationApi.getExploreService().deletePost(postList.getId());
+                    deleteData.enqueue(new Callback<BookmarkList_Data>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+
+//                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+
+//                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+
+
+
+                }
+
+
+
+
+            }
+
+
         });
 
 

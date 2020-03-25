@@ -24,7 +24,7 @@
     <item
         android:id="@+id/id_bookmark"
         android:checkable="true"
-        android:icon="@drawable/ic_bookmark"
+        android:icon="@drawable/ic_bookmark_black"
         android:title="@string/bookmark"
         app:showAsAction="never" />
     <item

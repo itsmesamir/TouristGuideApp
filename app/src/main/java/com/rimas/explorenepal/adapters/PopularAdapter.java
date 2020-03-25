@@ -19,10 +19,19 @@ import com.bumptech.glide.Glide;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.Map;
+import com.rimas.explorenepal.api.BookmarkApi;
+import com.rimas.explorenepal.api.RecommendationApi;
+import com.rimas.explorenepal.model.BookmarkList_Data;
 import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.PostList;
+import com.rimas.explorenepal.model.RecommendationList;
+import com.rimas.explorenepal.model.SinglePost;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularViewHolder> {
 
@@ -31,6 +40,10 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
     CardView cardView;
     RecyclerView recyclerView1;
     private ArrayList<PopularList> popularLists;
+
+
+    private ArrayList<RecommendationList> recommendationLists;
+    private ArrayList<SinglePost> favouriteLists;
     public PopularAdapter( Context context, ArrayList<PopularList> popularLists){
         this.context=context;
         this.popularLists= popularLists;
@@ -56,6 +69,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
     @Override
     public void onBindViewHolder(@NonNull PopularViewHolder holder, int position) {
 
+
         PopularList popularList=popularLists.get(position);
         holder.popularName.setText(popularList.getName());
         holder.popularLocation.setText(popularList.getLocation());
@@ -65,6 +79,40 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
                 .load(Uri.parse(popularList.getImage()))
                 .placeholder(holder.popularImage.getDrawable())
                 .into(holder.popularImage);
+
+        holder.btnBookmark.setTag("R.drawable.ic_bookmark");
+
+        Call<ArrayList<SinglePost>> selectCall= BookmarkApi.getExploreService().getSingleData();
+        selectCall.enqueue(new Callback<ArrayList<SinglePost>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SinglePost>> call, Response<ArrayList<SinglePost>> response) {
+                favouriteLists=response.body();
+
+                for(int i=0; i<favouriteLists.size();i++){
+
+                    if (popularList.getId()==favouriteLists.get(i).getId()){
+
+                        holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
+                        holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+
+                    }
+
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SinglePost>> call, Throwable t) {
+
+                Toast.makeText(context, "No posts", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         holder.popularImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +169,75 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
             }
         });
 
+
+        holder.btnBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                if(holder.btnBookmark.getTag().equals("R.drawable.ic_bookmark")){
+                    holder.btnBookmark.setTag("R.drawable.ic_bookmark_black");
+                    Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show();
+
+                    holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+                    Call<BookmarkList_Data> newCall = RecommendationApi.getExploreService().savePost(popularList.getId(),popularList.getName(),popularList.getLocation()
+                            ,popularList.getDescription(),popularList.getLat(), popularList.getLong(), popularList.getImage());
+                    newCall.enqueue(new Callback<BookmarkList_Data>() {
+                        @Override
+                        public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+                            Toast.makeText(context, "Success in inserting babe", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+
+//                               Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
+//                               Log.e("failure", String.valueOf(t.getCause()));
+
+                        }
+                    });
+
+                }
+                else{
+                    holder.btnBookmark.setTag("R.drawable.ic_bookmark");
+
+                    Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show();
+
+                    holder.btnBookmark.setImageResource(R.drawable.ic_bookmark);
+
+                    Call<BookmarkList_Data> deleteData= RecommendationApi.getExploreService().deletePost(popularList.getId());
+                    deleteData.enqueue(new Callback<BookmarkList_Data>() {
+                        @Override
+                        public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+
+//                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+
+//                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+
+
+
+                }
+
+
+
+
+            }
+
+
+        });
+
     }
+
 
 
  
@@ -134,7 +250,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
 
         TextView popularName, popularLocation, popularDescription;
         ImageView popularImage;
-        ImageButton btnMap;
+        ImageButton btnMap, btnBookmark;
         public PopularViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -142,6 +258,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
             popularName= itemView.findViewById(R.id.popular_name);
             popularLocation= itemView.findViewById(R.id.popular_location);
             popularDescription= itemView.findViewById(R.id.popularDescription);
+            btnBookmark= itemView.findViewById(R.id.btnPopularBookmark);
 
 
             btnMap= itemView.findViewById(R.id.btnPopularMap);
