@@ -240,7 +240,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                            @Override
                            public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
 
-                               Toast.makeText(context, "Sorry to delete.", Toast.LENGTH_SHORT).show();
+                               Toast.makeText(context, "Unable to delete.", Toast.LENGTH_SHORT).show();
 
 
                            }
