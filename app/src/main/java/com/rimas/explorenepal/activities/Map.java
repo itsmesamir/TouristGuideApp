@@ -84,8 +84,6 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
 
         getAdapterIntent();
 
-        Log.d("Lat", String.valueOf(LAT));
-        Log.d("Long", String.valueOf(LONG));
         Mapbox.getInstance(this, getString(R.string.access_token));
         setContentView(R.layout.activity_map);
         mapView=findViewById(R.id.mapView);
@@ -138,6 +136,7 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
 
             LAT= getIntent().getDoubleExtra("Lat",26.8065);
             LONG= getIntent().getDoubleExtra("Long",87.2846);
+
 
 
         }

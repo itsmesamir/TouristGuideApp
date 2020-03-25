@@ -55,12 +55,16 @@ public class RecommendationApi {
 
         @POST("createFavourite.php")
         @FormUrlEncoded
-        Call<BookmarkList_Data> savePost(@Field("name") String name,
+        Call<BookmarkList_Data> savePost(@Field("id") Integer id,@Field("name") String name,
                                 @Field("location") String location,
                                 @Field("description") String description,
                                 @Field("lat") Double lat,
                                 @Field("_long") Double _long,
                                 @Field("image") String image);
+
+        @POST("deleteFavourite.php")
+        @FormUrlEncoded
+        Call<BookmarkList_Data> deletePost(@Field("id") Integer id);
 
 
 

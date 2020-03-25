@@ -52,6 +52,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     double distance;
     private double latitude, longitude;
     RecommendationApi recommendationApi;
+    boolean value=true;
 
 
     private ArrayList<RecommendationList> recommendationLists;
@@ -71,7 +72,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         LayoutInflater layoutInflater= LayoutInflater.from(context);
         View view= layoutInflater.inflate(R.layout.recommendation_layout, parent,false);
 
-        btnMap=view.findViewById(R.id.btnLocation);
+        btnMap=view.findViewById(R.id.btnMapBk);
         cardView= view.findViewById(R.id.recCard);
 
         setLocationManager();
@@ -190,7 +191,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             holder.btnBookmark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "btn clicked", Toast.LENGTH_SHORT).show();
+
+                   if(value){
+                       value=false;
+                       Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show();
 //                    String name= recommendationList.getName();
 //                    String location= recommendationList.getLocation();
 //                    String description= recommendationList.getDescription();
@@ -198,23 +202,55 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 //                    Double longitude= recommendationList.getLong();
 //                    String image= recommendationList.getImage();
 
+                       holder.btnBookmark.setImageResource(R.drawable.ic_bookmark_black);
+                       Call<BookmarkList_Data> newCall = RecommendationApi.getExploreService().savePost(recommendationList.getId(),recommendationList.getName(),recommendationList.getLocation()
+                               ,recommendationList.getDescription(),recommendationList.getLat(), recommendationList.getLong(), recommendationList.getImage());
+                       newCall.enqueue(new Callback<BookmarkList_Data>() {
+                           @Override
+                           public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+                               Toast.makeText(context, "Success in inserting babe", Toast.LENGTH_SHORT).show();
+                           }
 
-                    Call<BookmarkList_Data> newCall = RecommendationApi.getExploreService().savePost(recommendationList.getName(),recommendationList.getLocation()
-                            ,recommendationList.getDescription(),recommendationList.getLat(), recommendationList.getLong(), recommendationList.getImage());
-                    newCall.enqueue(new Callback<BookmarkList_Data>() {
-                        @Override
-                        public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
-                            Toast.makeText(context, "Success in inserting babe", Toast.LENGTH_SHORT).show();
-                        }
+                           @Override
+                           public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
 
-                        @Override
-                        public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+                               Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
+                               Log.e("failure", String.valueOf(t.getCause()));
 
-                            Toast.makeText(context, "Oopss. sorry", Toast.LENGTH_SHORT).show();
-                            Log.e("failure", String.valueOf(t.getCause()));
+                           }
+                       });
 
-                        }
-                    });
+                   }
+                   else{
+                       value=true;
+
+                       Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show();
+
+                       holder.btnBookmark.setImageResource(R.drawable.ic_bookmark);
+
+                       Call<BookmarkList_Data> deleteData= RecommendationApi.getExploreService().deletePost(recommendationList.getId());
+                       deleteData.enqueue(new Callback<BookmarkList_Data>() {
+                           @Override
+                           public void onResponse(Call<BookmarkList_Data> call, Response<BookmarkList_Data> response) {
+
+                               Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+                           }
+
+                           @Override
+                           public void onFailure(Call<BookmarkList_Data> call, Throwable t) {
+
+                               Toast.makeText(context, "Sorry to delete.", Toast.LENGTH_SHORT).show();
+
+
+                           }
+                       });
+
+
+
+                   }
+
+
 
 
                 }

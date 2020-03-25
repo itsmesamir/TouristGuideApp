@@ -1,6 +1,7 @@
 package com.rimas.explorenepal.fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,9 +24,13 @@ import com.rimas.explorenepal.adapters.ExploreAdapter;
 import com.rimas.explorenepal.api.BookmarkApi;
 import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
+import com.rimas.explorenepal.model.FavouriteList;
+import com.rimas.explorenepal.model.PopularList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +41,7 @@ import retrofit2.Response;
  */
 public class BookmarkFragment extends Fragment {
 
-    public List<BookmarkList> bookmarkLists;
+    public ArrayList<FavouriteList> bookmarkLists;
     RecyclerView recyclerView;
     BookmarkAdapter bookmarkAdapter;
     public static BookmarkDatabase bookmarkDatabase;
@@ -52,28 +57,64 @@ public class BookmarkFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        progressDialogManager();
         // Inflate the layout for this fragment
         final View v= inflater.inflate(R.layout.fragment_bookmark, container, false);
 
         recyclerView=v.findViewById(R.id.bookmarkRecyclerView);
         LinearLayoutManager llm = new LinearLayoutManager((BookmarkFragment.this.getContext()));
-        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         bookmarkAdapter= new BookmarkAdapter(getActivity(), bookmarkLists);
         recyclerView.setAdapter(bookmarkAdapter);
         getBookmarkData();
 
-//        bookmarkDatabase= Room.databaseBuilder(getContext(), BookmarkDatabase.class,"bookmark_data").allowMainThreadQueries().build();
 
         return v;
     }
 
+    private void progressDialogManager() {
+
+        ProgressDialog progressDialog= new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                //delayInMillis=4000;
+            }
+        }, 4000);
+    }
+
     private void getBookmarkData() {
 
-        List<BookmarkList> bookmarkLists= ExploreFragment.bookmarkDatabase.bookmarkListDao().getBookmarkListData();
 
-        bookmarkAdapter.setPostList(bookmarkLists);
-        recyclerView.setAdapter(bookmarkAdapter);
+        Call<ArrayList<FavouriteList>> newCall= BookmarkApi.getExploreService().getData();
+        newCall.enqueue(new Callback<ArrayList<FavouriteList>>() {
+            @Override
+            public void onResponse(Call<ArrayList<FavouriteList>> call, Response<ArrayList<FavouriteList>> response) {
+                bookmarkLists=response.body();
+                bookmarkAdapter.setPostList(bookmarkLists);
+                if (response.isSuccessful())
+                    //Log.e("Success", new Gson().toJson(response.body()));
+                    Log.e("Success",new Gson().toJson(bookmarkLists.get(1)));
+                else
+                    Log.e("unSuccess", new Gson().toJson(response.errorBody()));
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<FavouriteList>> call, Throwable t) {
+
+                Toast.makeText(getContext(), "Error in response", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
 
 
 

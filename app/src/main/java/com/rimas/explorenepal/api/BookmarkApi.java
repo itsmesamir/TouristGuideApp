@@ -3,6 +3,7 @@ package com.rimas.explorenepal.api;
 import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
 import com.rimas.explorenepal.model.ExplorePost;
+import com.rimas.explorenepal.model.FavouriteList;
 import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.PostList;
 
@@ -43,7 +44,7 @@ public class BookmarkApi {
     public interface ExploreService{
 
         @GET("readBookmarkData.php")
-        Call<ArrayList<BookmarkList_Data>> getData();
+        Call<ArrayList<FavouriteList>> getData();
 //        @GET("posts")
 //        Call<ArrayList<PostList>> getPostList();
 

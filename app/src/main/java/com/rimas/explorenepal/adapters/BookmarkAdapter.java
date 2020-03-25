@@ -32,6 +32,8 @@ import com.rimas.explorenepal.activities.Map;
 import com.rimas.explorenepal.fragments.MapFragment;
 import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
+import com.rimas.explorenepal.model.FavouriteList;
+import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.PostList;
 
 import java.util.ArrayList;
@@ -43,19 +45,19 @@ import java.util.List;
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder> {
 
     private Context context;
-    private List<BookmarkList> bookmarkList;
+    private List<FavouriteList> bookmarkList;
     CardView cardView;
-    ImageButton btnMap;
+//    ImageButton btnLocation;
     Fragment MapFragment;
 
-    public BookmarkAdapter(Context context, List<BookmarkList> bookmarkList){
+    public BookmarkAdapter(Context context, List<FavouriteList> bookmarkList){
         this.context = context;
         this.bookmarkList = bookmarkList;
     }
 
 
 
-    public void setPostList(List<BookmarkList> bookmarkList) {
+    public void setPostList(List<FavouriteList> bookmarkList) {
         this.bookmarkList = bookmarkList;
         notifyDataSetChanged();
     }
@@ -67,24 +69,72 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.Bookma
         LayoutInflater layoutInflater= LayoutInflater.from(context);
         View view= layoutInflater.inflate(R.layout.bookmark_layout, parent,false);
 
-//        btnMap=view.findViewById(R.id.btnPopularMap);
-//        cardView= view.findViewById(R.id.cardPopular);
+//        btnLocation= view.findViewById(R.id.btnMapBk);
         return new BookmarkViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BookmarkViewHolder holder, int position) {
 
-        final BookmarkList ld= bookmarkList.get(position);
+        FavouriteList favouriteList= bookmarkList.get(position);
 
-        holder.txtName.setText(ld.getName());
-        holder.txtLocation.setText(ld.getLocation());
-        holder.txtDescription.setText(ld.getDescription());
+        holder.btnLocation1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Map.class);
+
+                intent.putExtra("Lat", favouriteList.getLat());
+                intent.putExtra("Long", favouriteList.getLong());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.txtName.setText(favouriteList.getName());
+        holder.txtLocation.setText(favouriteList.getLocation());
 
         Glide.with(holder.bookmark_image.getContext())
-                .load(Uri.parse(ld.getImage()))
+                .load(Uri.parse(favouriteList.getImage()))
                 .placeholder(holder.bookmark_image.getDrawable())
                 .into(holder.bookmark_image);
+
+
+
+
+        holder.bookmark_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", favouriteList.getName());
+                intent.putExtra("imageDescription", favouriteList.getDescription());
+                intent.putExtra("imageLocation", favouriteList.getLocation());
+                intent.putExtra("image", favouriteList.getImage());
+                context.startActivity(intent);
+            }
+        });
+        holder.txtLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", favouriteList.getName());
+                intent.putExtra("imageDescription", favouriteList.getDescription());
+                intent.putExtra("imageLocation", favouriteList.getLocation());
+                intent.putExtra("image", favouriteList.getImage());
+                context.startActivity(intent);
+            }
+        });
+        holder.txtName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context, Details.class);
+                intent.putExtra("imageName", favouriteList.getName());
+                intent.putExtra("imageDescription", favouriteList.getDescription());
+                intent.putExtra("imageLocation", favouriteList.getLocation());
+                intent.putExtra("image", favouriteList.getImage());
+                context.startActivity(intent);
+            }
+        });
+
+
 
 
     }
@@ -99,19 +149,17 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.Bookma
     public class BookmarkViewHolder extends RecyclerView.ViewHolder{
 
         TextView txtName, txtDescription, txtLocation;
-        ImageButton btnBookmark, btnLocation, btnFavourite;
+        ImageButton btnBookmark, btnLocation1, btnFavourite;
         ImageView bookmark_image;
 
         public BookmarkViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtName= itemView.findViewById(R.id.txtName);
-            txtDescription=itemView.findViewById(R.id.txtDescription);
-            txtLocation=itemView.findViewById(R.id.txtLocation);
-            btnBookmark=itemView.findViewById(R.id.btnBookmark);
-            btnLocation= itemView.findViewById(R.id.btnLocation);
-            btnFavourite=itemView.findViewById(R.id.btnFavourite);
-            bookmark_image=itemView.findViewById(R.id.bookmark_image);
+            txtName= itemView.findViewById(R.id.txtBkName);
+            txtLocation=itemView.findViewById(R.id.txtBkLocation);
+            btnBookmark=itemView.findViewById(R.id.btnBookmarkBk);
+            btnLocation1= itemView.findViewById(R.id.btnMapBk);
+            bookmark_image=itemView.findViewById(R.id.imgBookmark);
         }
     }
 }
