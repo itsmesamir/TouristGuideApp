@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.id_profile:
                         selectedFragment = new ProfileFragment();
-                        toolbar.setTitle("Profile");
+                        toolbar.setTitle("About us");
                         break;
 
 
