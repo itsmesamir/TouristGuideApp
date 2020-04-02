@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#9C27B0</color>
+    <color name="colorPrimaryDark">#1F0349</color>
+    <color name="colorPrimaryLight">#E1BEE7</color>
+    <color name="colorAccent">#536DFE</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorPurple">#4a148c</color>
+    <color name="colorLightPurple">#6a1b9a</color>
+    <color name="colorDarkPink">#880e4f</color>
+    <color name="colorLightPink">#ad1457</color>
+    <color name="colorPurpleLt">#7b1fa2</color>
+    <color name="colorLoginEnd">#1F0349</color>v
+    <color name="colorLoginUp">#860373</color>
+    <color name="colorRegDown">#120114</color>
+    <color name="colorRegUp">#99015B</color>
+    <color name="colorOrange">#F44336</color>
+    <color name="colorOrangeDark">#D32F2F</color>
+    <color name="colorOrangeLight">#FF5252</color>
+    <color name="colorOneBg">#140057</color>
+    <color name="colorTwoBg">#950055</color>
+    <color name="cardviewColor">#0f3f6f</color>
+
+    <color  name="mapboxWhite">#ffffff</color>
+    <color name="mapboxBlue">#4264fb</color>
+    <color name="mapboxGrayLight">#c6d2e1</color>
+
+    <color name="control_background">#cc4285f4</color>
+
+
+</resources>
