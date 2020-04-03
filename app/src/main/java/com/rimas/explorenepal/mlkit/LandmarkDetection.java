@@ -22,14 +22,15 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.ml.vision.common.FirebaseVisionLatLng;
 import com.rimas.explorenepal.R;
 
 import java.util.List;
 
-public class TextDetection extends AppCompatActivity {
+public class LandmarkDetection extends AppCompatActivity {
 
     ImageView imgResult;
     Button btnCapture, btnDetect, btnCamera, btnFile;
@@ -39,6 +40,7 @@ public class TextDetection extends AppCompatActivity {
     String finalFilePath;
     boolean value;
     Toolbar toolbar;
+    StringBuilder stringBuilder= new StringBuilder();
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -47,13 +49,14 @@ public class TextDetection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_detection);
         toolbar= findViewById(R.id.toolbar);
-        toolbar.setTitle("Text Detection");
+        toolbar.setTitle("Landmark Detection");
         setSupportActionBar(toolbar);
         imgResult=findViewById(R.id.imgResult);
         btnCapture=findViewById(R.id.btnCapture);
         btnDetect=findViewById(R.id.btnDetect);
         txtResult=findViewById(R.id.txtResult);
         btnDetect.setEnabled(false);
+        btnDetect.setText("DETECT DETAILS");
 
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +78,7 @@ public class TextDetection extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(TextDetection.this, "Image field is empty.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LandmarkDetection.this, "Image field is empty.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -186,21 +189,34 @@ public class TextDetection extends AppCompatActivity {
 
 
     private void detectTextFromImage(){
-       text="";
+        text="";
         FirebaseVisionImage firebaseVisionImage= FirebaseVisionImage.fromBitmap(imageBitmap);
-        FirebaseVisionTextRecognizer firebaseVisionTextDetector= FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-        firebaseVisionTextDetector.processImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+        FirebaseVisionCloudLandmarkDetector detector= FirebaseVision.getInstance().getVisionCloudLandmarkDetector();
+        detector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionCloudLandmark>>() {
             @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+            public void onSuccess(List<FirebaseVisionCloudLandmark> firebaseVisionCloudLandmarks) {
+                text+="Landmark Detection Details"+"\n";
 
-                displayTextFromImage(firebaseVisionText);
+                for (FirebaseVisionCloudLandmark firebaseVisionCloudLandmark : firebaseVisionCloudLandmarks){
 
+                    text+= "Landmark Name: "+ firebaseVisionCloudLandmark.getLandmark()+"\n"
+                            + "Landmark detection confidence: "+firebaseVisionCloudLandmark.getConfidence()+"\n";
+
+                    for (FirebaseVisionLatLng latLng: firebaseVisionCloudLandmark.getLocations()){
+
+                        text+="Landmark Latitude: "+ latLng.getLatitude()+"\n"+ "Landmark Longitude: "+latLng.getLongitude()+"\n";
+                    }
+
+                    txtResult.setText(text);
                 }
+
+
+            }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                Toast.makeText(TextDetection.this, "Error in detecting text."+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LandmarkDetection.this, "Error in detecting Landmark details."+e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("Error", e.getMessage());
             }
         });
@@ -209,60 +225,34 @@ public class TextDetection extends AppCompatActivity {
     private void detectText(){
         text="";
         FirebaseVisionImage firebaseVisionImage= FirebaseVisionImage.fromBitmap(BitmapFactory.decodeFile(finalFilePath));
-        FirebaseVisionTextRecognizer firebaseVisionTextRecognizer= FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-//        FirebaseVisionTextDetector firebaseVisionTextDetector= FirebaseVision.getInstance().getVisionTextDetector();
-        firebaseVisionTextRecognizer.processImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+        FirebaseVisionCloudLandmarkDetector detector= FirebaseVision.getInstance().getVisionCloudLandmarkDetector();
+        detector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionCloudLandmark>>() {
             @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+            public void onSuccess(List<FirebaseVisionCloudLandmark> firebaseVisionCloudLandmarks) {
+                text+="Landmark Detection Details"+"\n";
 
-                displayTextFromImage(firebaseVisionText);
+                for (FirebaseVisionCloudLandmark firebaseVisionCloudLandmark : firebaseVisionCloudLandmarks){
+
+                    text+= "Landmark Name: "+ firebaseVisionCloudLandmark.getLandmark()+"\n"
+                            + "Landmark detection confidence: "+firebaseVisionCloudLandmark.getConfidence()+"\n";
+
+                    for (FirebaseVisionLatLng latLng: firebaseVisionCloudLandmark.getLocations()){
+
+                        text+="Landmark Latitude: "+ latLng.getLatitude()+"\n"+ "Landmark Longitude: "+latLng.getLongitude()+"\n";
+                    }
+
+                    txtResult.setText(text);
+                }
+
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                Toast.makeText(TextDetection.this, "Error in detecting text."+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LandmarkDetection.this, "Error in detecting Landmark details."+e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("Error", e.getMessage());
             }
         });
-
-    }
-
-
-    private void displayTextFromImage(FirebaseVisionText firebaseVisionText) {
-
-        List <FirebaseVisionText.TextBlock> blocks= firebaseVisionText.getTextBlocks();
-        if (blocks.size() ==0){
-            Toast.makeText(this, "No text found", Toast.LENGTH_SHORT).show();
-        }
-        for (int i = 0; i < blocks.size(); i++) {
-
-            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
-            for (int j = 0; j < lines.size(); j++) {
-                text+="\n";
-                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
-                for (int k = 0; k < elements.size(); k++) {
-                    text+= elements.get(k).getText()+" ";
-
-//                    GraphicOverlay.Graphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
-//                    graphicOverlay.add(textGraphic);
-
-                }
-            }
-        }
-        txtResult.setText(text);
-
-//        List <FirebaseVisionText.Block> blockList= firebaseVisionText.getBlocks();
-//        if (blockList.size()==0){
-//            Toast.makeText(this, "No text found in image", Toast.LENGTH_SHORT).show();
-//        }
-//        else{
-//            for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
-//                String text= block.getText();
-//                txtResult.setText(text);
-//            }
-//
-//        }
     }
 }

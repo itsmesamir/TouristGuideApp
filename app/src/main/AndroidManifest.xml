@@ -20,24 +20,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".mlkit.TextTranslation">
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+
+        </activity>
+        <activity android:name=".mlkit.LandmarkDetection">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity android:name=".mlkit.BarcodeDetection">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="barcode" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <!-- <activity android:name=".activities.SplashScreen"> -->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity> <!-- <activity android:name=".activities.SplashScreen"> -->
         <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
         <!-- </activity> -->
-<!--        <activity android:name=".mlkit.TextDetection">-->
+        <activity android:name=".mlkit.TextDetection">
 <!--            <meta-data-->
 <!--                android:name="com.google.firebase.ml.vision.DEPENDENCIES"-->
 <!--                android:value="ocr" />-->
@@ -47,7 +65,7 @@
 
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
-<!--        </activity> &lt;!&ndash; <activity android:name=".activities.MainActivity" > &ndash;&gt;-->
+        </activity> <!-- <activity android:name=".activities.MainActivity" > -->
         <!-- </activity> -->
         <!-- <activity -->
         <!-- android:name="com.rimas.explorenepal.mlkit.ChooserActivity" -->
@@ -72,7 +90,7 @@
         <!-- </activity> -->
         <activity android:name=".activities.Map" />
         <activity android:name=".activities.Details" />
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegistrationActivity" />
     </application>
 
