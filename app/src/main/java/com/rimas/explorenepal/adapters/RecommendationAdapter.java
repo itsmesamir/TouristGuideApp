@@ -4,13 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,20 +22,14 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.Map;
 import com.rimas.explorenepal.api.BookmarkApi;
-import com.rimas.explorenepal.api.ExploreApi;
 import com.rimas.explorenepal.api.RecommendationApi;
-import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
-import com.rimas.explorenepal.model.FavouriteList;
-import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.RecommendationList;
 import com.rimas.explorenepal.model.SinglePost;
 
@@ -81,7 +73,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         View view= layoutInflater.inflate(R.layout.recommendation_layout, parent,false);
 
         btnBookmark=view.findViewById(R.id.btnRecommendationBookmark);
-        btnFavourite=view.findViewById(R.id.btnRecommendationFavourite);
 
 
 
@@ -350,7 +341,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             RecDescription= itemView.findViewById(R.id.txtRecommendationDescription);
             RecImage= itemView.findViewById(R.id.recommendationImage);
             btnBookmark=itemView.findViewById(R.id.btnRecommendationBookmark);
-            btnFavourite=itemView.findViewById(R.id.btnRecommendationFavourite);
             btnLocation=itemView.findViewById(R.id.btnRecommendationLocation);
         }
     }

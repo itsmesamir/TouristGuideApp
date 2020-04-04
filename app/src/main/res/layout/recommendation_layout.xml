@@ -76,35 +76,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/btnRecommendationFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="#00FFFFFF"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/btnRecommendationBookmark"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnRecommendationBookmark"
-            app:srcCompat="@drawable/ic_favorite"
-            tools:ignore="VectorDrawableCompat" />
-
-        <ImageButton
             android:id="@+id/btnRecommendationBookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
             android:background="#00FFFFFF"
             android:padding="8dp"
             app:layout_constraintEnd_toStartOf="@+id/btnRecommendationLocation"
-            app:layout_constraintStart_toEndOf="@+id/btnRecommendationFavourite"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btnRecommendationLocation"
             app:srcCompat="@drawable/ic_bookmark"
             tools:ignore="VectorDrawableCompat" />
@@ -113,8 +93,6 @@
             android:id="@+id/btnRecommendationLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginEnd="250dp"
             android:layout_marginRight="250dp"
             android:background="#00FFFFFF"
