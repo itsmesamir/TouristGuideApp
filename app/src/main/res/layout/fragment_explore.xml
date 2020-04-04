@@ -121,7 +121,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/txtFamous">
 
                 <include
-                    layout="@layout/popular_recyclerview"/>
+                    android:id="@+id/include"
+                    layout="@layout/popular_recyclerview"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="Scan"
+                    android:src="@drawable/ic_scan"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/include"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/include"
+                    app:layout_constraintVertical_bias="1.0" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

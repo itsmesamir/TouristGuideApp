@@ -1,33 +1,34 @@
 package com.rimas.explorenepal.fragments;
 
 
-import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.os.Parcelable;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.rimas.explorenepal.Database.BookmarkDatabase;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.adapters.ExploreAdapter;
 import com.rimas.explorenepal.adapters.PopularAdapter;
 import com.rimas.explorenepal.api.ExploreApi;
-import com.rimas.explorenepal.api.PopularApi;
-import com.rimas.explorenepal.model.ExplorePost;
+import com.rimas.explorenepal.mlkit.BarcodeDetection;
+import com.rimas.explorenepal.mlkit.LandmarkDetection;
+import com.rimas.explorenepal.mlkit.TextDetection;
+import com.rimas.explorenepal.mlkit.TextTranslation;
 import com.rimas.explorenepal.model.PopularList;
 import com.rimas.explorenepal.model.PostList;
 
@@ -52,6 +53,8 @@ public class ExploreFragment extends Fragment {
     PopularAdapter popularAdapter;
     ExploreAdapter exploreAdapter;
     LinearLayoutManager llm;
+    FloatingActionButton fab;
+    Button btnTextDetection, btnTextTranslation, btnBarcodeDetection, btnLandmarkDetection;
 
     public static BookmarkDatabase bookmarkDatabase;
 
@@ -67,7 +70,7 @@ public class ExploreFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_explore, container, false);
-
+        fab=v.findViewById(R.id.fab);
         progressDialogManager();
         exploreAdapter= new ExploreAdapter(getContext(), postList);
         recyclerView=v.findViewById(R.id.exploreRecyclerView);
@@ -88,8 +91,87 @@ public class ExploreFragment extends Fragment {
 
         getPopularData();
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                detector();
+            }
+        });
+
         return  v;
 
+
+    }
+    private void detector() {
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExploreFragment.this.getContext());
+        View mView = getLayoutInflater().inflate(R.layout.scannerdialog, null);
+
+        btnTextDetection= mView.findViewById(R.id.btnTextDetection);
+        btnTextTranslation= mView.findViewById(R.id.btnTextTranslation);
+        btnBarcodeDetection=mView.findViewById(R.id.btnBarcodeDetection);
+        btnLandmarkDetection= mView.findViewById(R.id.btnLandmarkDetection);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+        btnTextDetection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                Intent intent= new Intent(ExploreFragment.this.getContext(), TextDetection.class);
+                startActivity(intent);
+
+            }
+        });
+        btnTextTranslation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                Intent intent= new Intent(ExploreFragment.this.getContext(), TextTranslation.class);
+                startActivity(intent);
+
+            }
+        });
+        btnBarcodeDetection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                Intent intent= new Intent(ExploreFragment.this.getContext(), BarcodeDetection.class);
+                startActivity(intent);
+
+            }
+        });
+        btnLandmarkDetection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                Intent intent= new Intent(ExploreFragment.this.getContext(), LandmarkDetection.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+
+
+//                mBuilder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                    }
+//                });
+//
+//                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        dialogInterface.dismiss();
+//                    }
+//                });
 
     }
 

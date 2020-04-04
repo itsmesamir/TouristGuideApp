@@ -21,73 +21,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".mlkit.TextTranslation">
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
 
         </activity>
         <activity android:name=".mlkit.LandmarkDetection">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".mlkit.BarcodeDetection">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="barcode" />
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity> <!-- <activity android:name=".activities.SplashScreen"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+        </activity>
+         <activity android:name=".activities.SplashScreen">
+         <intent-filter>
+         <action android:name="android.intent.action.MAIN" />
+         <category android:name="android.intent.category.LAUNCHER" />
+         </intent-filter>
+         </activity>
         <activity android:name=".mlkit.TextDetection">
-<!--            <meta-data-->
-<!--                android:name="com.google.firebase.ml.vision.DEPENDENCIES"-->
-<!--                android:value="ocr" />-->
-
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity> <!-- <activity android:name=".activities.MainActivity" > -->
-        <!-- </activity> -->
-        <!-- <activity -->
-        <!-- android:name="com.rimas.explorenepal.mlkit.ChooserActivity" -->
-        <!-- android:exported="true" -->
-        <!-- android:label="@string/app_name"> -->
-        <!-- <meta-data -->
-        <!-- android:name="com.google.firebase:firebase-ml-vision.DEPENDENCIES" -->
-        <!-- android:value="face"/> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-        <!-- <activity android:name=".mlkit.LivePreviewActivity" android:exported="true"> -->
-        <!-- &lt;!&ndash;                        <intent-filter>&ndash;&gt; -->
-        <!-- &lt;!&ndash;                            <action android:name="android.intent.action.MAIN" />&ndash;&gt; -->
-        <!-- &lt;!&ndash;                            <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt; -->
-        <!-- &lt;!&ndash;                        </intent-filter>&ndash;&gt; -->
-        <!-- </activity> -->
-        <!-- <activity android:name=".mlkit.StillImageActivity" -->
-        <!-- android:exported="true"> -->
-        <!-- </activity> -->
+            <meta-data
+                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                android:value="ocr" />
+        </activity>
+         <activity android:name=".activities.MainActivity" >
+         </activity>
         <activity android:name=".activities.Map" />
         <activity android:name=".activities.Details" />
         <activity android:name=".activities.LoginActivity" />
