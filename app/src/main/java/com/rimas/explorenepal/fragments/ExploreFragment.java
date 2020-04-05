@@ -3,6 +3,7 @@ package com.rimas.explorenepal.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +13,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.rimas.explorenepal.Database.BookmarkDatabase;
@@ -41,6 +53,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +70,7 @@ public class ExploreFragment extends Fragment {
     LinearLayoutManager llm;
     FloatingActionButton fab;
     Button btnTextDetection, btnTextTranslation, btnBarcodeDetection, btnLandmarkDetection;
+    private int REQUEST_CHECK_SETTINGS=2;
 
     public static BookmarkDatabase bookmarkDatabase;
 
@@ -71,6 +87,7 @@ public class ExploreFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_explore, container, false);
         fab=v.findViewById(R.id.fab);
+        createLocationRequest();
         progressDialogManager();
         exploreAdapter= new ExploreAdapter(getContext(), postList);
         recyclerView=v.findViewById(R.id.exploreRecyclerView);
@@ -101,6 +118,73 @@ public class ExploreFragment extends Fragment {
         return  v;
 
 
+    }
+
+    protected void createLocationRequest() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        SettingsClient client = LocationServices.getSettingsClient(this.getActivity());
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+
+
+        task.addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+
+//                Toast.makeText(MapFragment.this.getContext(), "Gps already open",
+//                        Toast.LENGTH_LONG).show();
+//                Log.d("location settings",locationSettingsResponse.toString());
+            }
+        });
+
+        task.addOnFailureListener(this.getActivity(), new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        startIntentSenderForResult(resolvable.getResolution().getIntentSender(), REQUEST_CHECK_SETTINGS, null, 0, 0, 0, null);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==REQUEST_CHECK_SETTINGS){
+
+            if(resultCode==RESULT_OK){
+
+                Toast.makeText(this.getContext(), "Gps opened", Toast.LENGTH_SHORT).show();
+                //if user allows to open gps
+                Log.d("result ok",data.toString());
+
+            }else if(resultCode==RESULT_CANCELED){
+
+                Toast.makeText(this.getContext(), "refused to open gps",
+                        Toast.LENGTH_SHORT).show();
+                createLocationRequest();
+                // in case user back press or refuses to open gps
+                Log.d("result cancelled",data.toString());
+            }
+        }
     }
     private void detector() {
 

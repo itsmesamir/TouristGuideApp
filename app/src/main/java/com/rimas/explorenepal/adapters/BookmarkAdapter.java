@@ -1,13 +1,8 @@
 package com.rimas.explorenepal.adapters;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,30 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rimas.explorenepal.R;
 import com.rimas.explorenepal.activities.Details;
 import com.rimas.explorenepal.activities.MainActivity;
 import com.rimas.explorenepal.activities.Map;
 import com.rimas.explorenepal.api.RecommendationApi;
-import com.rimas.explorenepal.fragments.BookmarkFragment;
-import com.rimas.explorenepal.fragments.ExploreFragment;
-import com.rimas.explorenepal.fragments.MapFragment;
-import com.rimas.explorenepal.model.BookmarkList;
 import com.rimas.explorenepal.model.BookmarkList_Data;
 import com.rimas.explorenepal.model.FavouriteList;
-import com.rimas.explorenepal.model.PopularList;
-import com.rimas.explorenepal.model.PostList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -131,9 +115,9 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.Bookma
                     }
                 });
 
-                AppCompatActivity activity = (AppCompatActivity)v.getContext();
-                activity.getFragmentManager().findFragmentById(R.id.fragmentBookmark);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBookmark, new BookmarkFragment()).commit();
+                Intent intent= new Intent(context, MainActivity.class);
+                intent.putExtra("Value", false);
+                context.startActivity(intent);
 
 
 
