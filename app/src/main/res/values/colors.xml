@@ -22,7 +22,7 @@
     <color name="colorOneBg">#140057</color>
     <color name="colorTwoBg">#950055</color>
     <color name="cardviewColor">#0f3f6f</color>
-
+    <color name="btnSearch">#008577</color>
     <color  name="mapboxWhite">#ffffff</color>
     <color name="mapboxBlue">#4264fb</color>
     <color name="mapboxGrayLight">#c6d2e1</color>

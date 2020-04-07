@@ -24,7 +24,6 @@ public class ExploreApi {
 
     public static ExploreService getExploreService(){
         if (exploreService==null){
-
             Retrofit retrofit= new Retrofit.Builder()
                     .baseUrl(Phone_url)
                     .addConverterFactory(GsonConverterFactory.create())

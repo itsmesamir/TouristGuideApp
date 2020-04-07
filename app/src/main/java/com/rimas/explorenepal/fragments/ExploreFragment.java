@@ -286,7 +286,7 @@ public class ExploreFragment extends Fragment {
                 exploreAdapter.setPostList(postList);
                 if (response.isSuccessful())
                     //Log.e("Success", new Gson().toJson(response.body()));
-                    Log.e("Success",new Gson().toJson(postList.get(1)));
+                    Log.e("Success explore",new Gson().toJson(postList.get(1)));
                 else
                     Log.e("unSuccess", new Gson().toJson(response.errorBody()));
             }
@@ -295,6 +295,8 @@ public class ExploreFragment extends Fragment {
             public void onFailure(Call<List<PostList>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Error in response", Toast.LENGTH_SHORT).show();
                 Log.e("failure", String.valueOf(t.getCause()));
+                System.out.println("onFailure"+call+"\n"+t.getMessage());
+
 
             }
         });
@@ -309,7 +311,7 @@ public class ExploreFragment extends Fragment {
               popularAdapter.setPostLists(popularList);
                 if (response.isSuccessful())
                     //Log.e("Success", new Gson().toJson(response.body()));
-                    Log.e("Success",new Gson().toJson(popularList.get(1)));
+                    Log.e("Success popular",new Gson().toJson(popularList.get(1)));
                 else
                     Log.e("unSuccess", new Gson().toJson(response.errorBody()));
 
@@ -317,8 +319,9 @@ public class ExploreFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<PopularList>> call, Throwable t) {
-                Toast.makeText(getActivity(), "Error in respe", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error in response", Toast.LENGTH_SHORT).show();
                 Log.e("failureee", String.valueOf(t.getCause()));
+                System.out.println("onFailuree"+call+t.getMessage());
 
             }
         });

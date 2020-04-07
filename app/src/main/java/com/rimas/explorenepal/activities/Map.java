@@ -1,13 +1,12 @@
 package com.rimas.explorenepal.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,16 +16,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -38,6 +45,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
@@ -45,7 +54,6 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.rimas.explorenepal.R;
-import com.rimas.explorenepal.fragments.MapFragment;
 
 import java.util.List;
 
@@ -56,6 +64,7 @@ import retrofit2.Response;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 public class Map extends AppCompatActivity implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener
         , LocationListener {
@@ -77,10 +86,17 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
     private NavigationMapRoute navigationMapRoute;
     private LocationManager locationManager;
     private double LAT , LONG;
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    private CarmenFeature home;
+    private CarmenFeature work;
+    private String geojsonSourceLayerId = "geojsonSourceLayerId";
+    private String symbolIconId = "symbolIconId";
+    private boolean value=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         getAdapterIntent();
 
@@ -88,7 +104,6 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
         setContentView(R.layout.activity_map);
         mapView=findViewById(R.id.mapView);
         mylocationbutton= findViewById(R.id.myLocationButton);
-        mapView.onCreate(savedInstanceState);
         mapView.onCreate(savedInstanceState);
         btnStartNavigation=findViewById(R.id.btnStartNavigation);
         btnStartNavigation.setOnClickListener(new View.OnClickListener() {
@@ -155,8 +170,16 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
                 iconAllowOverlap(true),
                 iconIgnorePlacement(true));
 
-        style.addLayer(destinationSymbolLayer);
+        if (value){
+
+            style.addLayer(destinationSymbolLayer);
+        }
+
+
+
     }
+
+
     private void enableLocationComponent(@NonNull Style style) {
 
 
@@ -284,6 +307,27 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
 
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
+
+        mbMap.getStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+
+                SymbolLayer destinationSymbolLayer = new SymbolLayer("destination-symbol-layer-id", "destination-source-id");
+                destinationSymbolLayer.withProperties(
+                        iconImage("destination-icon-id"),
+                        iconAllowOverlap(true),
+                        iconIgnorePlacement(true));
+                if (!value) {
+                    style.addLayer(destinationSymbolLayer);
+                    value=true;
+                }
+
+            }
+        });
+
+//        if (!value){
+//            new Map();
+//        }
         Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
 //        Point destinationPoint = Point.fromLngLat(LONG, LAT);
         Point originPoint = Point.fromLngLat(originLocation.getLongitude(), originLocation.getLatitude());
@@ -296,7 +340,8 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
 ////
         getRoute(originPoint, destinationPoint);
         btnStartNavigation.setEnabled(true);
-        btnStartNavigation.setBackgroundResource(R.color.mapboxBlue);
+        btnStartNavigation.setBackgroundResource(R.drawable.mapbackground);
+
         return true;
     }
 
@@ -331,10 +376,114 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
 ////
                 getRoute(originPoint, destinationPoint);
                 btnStartNavigation.setEnabled(true);
-                btnStartNavigation.setBackgroundResource(R.color.mapboxBlue);
+                btnStartNavigation.setBackgroundResource(R.drawable.mapbackground);
+
+
+                initSearchFab();
+
+                addUserLocations();
+
+
+                // Create an empty GeoJSON source using the empty feature collection
+                setUpSource(style);
+
+                // Set up a new symbol layer for displaying the searched location's feature coordinates
+                setupLayer(style);
 
     }
 });
+    }
+    private void initSearchFab() {
+        findViewById(R.id.fab_location_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnStartNavigation.setEnabled(false);
+                btnStartNavigation.setBackgroundResource(R.drawable.button);
+                navigationMapRoute.removeRoute();
+                value=false;
+                mbMap.getStyle(new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        SymbolLayer destinationSymbolLayer = new SymbolLayer("destination-symbol-layer-id", "destination-source-id");
+                        destinationSymbolLayer.withProperties(
+                                iconImage("destination-icon-id"),
+                                iconAllowOverlap(true),
+                                iconIgnorePlacement(true));
+
+                        style.removeLayer(destinationSymbolLayer);
+                    }
+                });
+                Intent intent = new PlaceAutocomplete.IntentBuilder()
+                        .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
+                        .placeOptions(PlaceOptions.builder()
+                                .backgroundColor(Color.parseColor("#EEEEEE"))
+                                .limit(10)
+                                .addInjectedFeature(home)
+                                .addInjectedFeature(work)
+                                .build(PlaceOptions.MODE_CARDS))
+                        .build(Map.this);
+                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            }
+        });
+    }
+
+    private void addUserLocations() {
+        home = CarmenFeature.builder().text("Mapbox SF Office")
+                .geometry(Point.fromLngLat(-122.3964485, 37.7912561))
+                .placeName("50 Beale St, San Francisco, CA")
+                .id("mapbox-sf")
+                .properties(new JsonObject())
+                .build();
+
+        work = CarmenFeature.builder().text("Mapbox DC Office")
+                .placeName("740 15th Street NW, Washington DC")
+                .geometry(Point.fromLngLat(-77.0338348, 38.899750))
+                .id("mapbox-dc")
+                .properties(new JsonObject())
+                .build();
+    }
+
+    private void setUpSource(@NonNull Style loadedMapStyle) {
+        loadedMapStyle.addSource(new GeoJsonSource(geojsonSourceLayerId));
+    }
+
+    private void setupLayer(@NonNull Style loadedMapStyle) {
+        loadedMapStyle.addLayer(new SymbolLayer("SYMBOL_LAYER_ID", geojsonSourceLayerId).withProperties(
+                iconImage(symbolIconId),
+                iconOffset(new Float[] {0f, -8f})
+        ));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+
+            // Retrieve selected location's CarmenFeature
+            CarmenFeature selectedCarmenFeature = PlaceAutocomplete.getPlace(data);
+
+            // Create a new FeatureCollection and add a new Feature to it using selectedCarmenFeature above.
+            // Then retrieve and update the source designated for showing a selected location's symbol layer icon
+
+            if (mbMap != null) {
+                Style style = mbMap.getStyle();
+                if (style != null) {
+                    GeoJsonSource source = style.getSourceAs(geojsonSourceLayerId);
+                    if (source != null) {
+                        source.setGeoJson(FeatureCollection.fromFeatures(
+                                new Feature[] {Feature.fromJson(selectedCarmenFeature.toJson())}));
+                    }
+
+                    // Move map camera to the selected location
+                    mbMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                                    .target(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
+                                            ((Point) selectedCarmenFeature.geometry()).longitude()))
+                                    .zoom(14)
+                                    .build()), 4000);
+                }
+            }
+        }
     }
 
 

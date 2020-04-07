@@ -59,6 +59,8 @@ dependencies {
 //    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v7:0.4.0'
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.26.0'
 
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.11.0'
+
 //justify textview
 
     implementation 'me.biubiubiu.justifytext:library:1.1'
