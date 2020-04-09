@@ -399,7 +399,9 @@ public class Map extends AppCompatActivity implements PermissionsListener, OnMap
             public void onClick(View view) {
                 btnStartNavigation.setEnabled(false);
                 btnStartNavigation.setBackgroundResource(R.drawable.button);
-                navigationMapRoute.removeRoute();
+                if (navigationMapRoute!=null) {
+                    navigationMapRoute.removeRoute();
+                }
                 value=false;
                 mbMap.getStyle(new Style.OnStyleLoaded() {
                     @Override

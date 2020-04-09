@@ -298,7 +298,9 @@ public class MapFragment extends Fragment implements PermissionsListener, OnMapR
             public void onClick(View view) {
                 btnStartNavigation.setEnabled(false);
                 btnStartNavigation.setBackgroundResource(R.drawable.button);
-                navigationMapRoute.removeRoute();
+                if (navigationMapRoute!=null) {
+                    navigationMapRoute.removeRoute();
+                }
                 value=false;
                 mbMap.getStyle(new Style.OnStyleLoaded() {
                     @Override
