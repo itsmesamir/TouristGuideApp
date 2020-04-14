@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,10 +35,11 @@ public class LandmarkDetection extends AppCompatActivity {
 
     ImageView imgResult;
     Button btnCapture, btnDetect, btnCamera, btnFile;
+    ImageButton btnGoogle;
     TextView txtResult;
     Bitmap imageBitmap;
     String text="";
-    String finalFilePath;
+    String finalFilePath, landmark_name;
     boolean value;
     Toolbar toolbar;
     StringBuilder stringBuilder= new StringBuilder();
@@ -47,10 +49,12 @@ public class LandmarkDetection extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_detection);
+        setContentView(R.layout.landmark_detection);
         toolbar= findViewById(R.id.toolbar);
         toolbar.setTitle("Landmark Detection");
         setSupportActionBar(toolbar);
+        btnGoogle= findViewById(R.id.btnGoogle);
+        btnGoogle.setVisibility(View.GONE);
         imgResult=findViewById(R.id.imgResult);
         btnCapture=findViewById(R.id.btnCapture);
         btnDetect=findViewById(R.id.btnDetect);
@@ -83,7 +87,18 @@ public class LandmarkDetection extends AppCompatActivity {
             }
         });
 
+
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(LandmarkDetection.this, Websearch.class);
+                intent.putExtra("Landmark_name", landmark_name);
+                startActivity(intent);
+            }
+        });
+
     }
+
 
     private void dialogPopup() {
 
@@ -208,7 +223,11 @@ public class LandmarkDetection extends AppCompatActivity {
                     }
 
                     txtResult.setText(text);
+
+                    landmark_name= firebaseVisionCloudLandmark.getLandmark();
                 }
+
+                btnGoogle.setVisibility(View.VISIBLE);
 
 
             }
@@ -242,7 +261,13 @@ public class LandmarkDetection extends AppCompatActivity {
                     }
 
                     txtResult.setText(text);
+                    landmark_name= firebaseVisionCloudLandmark.getLandmark();
+
                 }
+
+
+
+                btnGoogle.setVisibility(View.VISIBLE);
 
 
             }
@@ -255,4 +280,6 @@ public class LandmarkDetection extends AppCompatActivity {
             }
         });
     }
+
+
 }

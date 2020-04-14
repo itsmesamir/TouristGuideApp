@@ -49,6 +49,7 @@ public class TextDetection extends AppCompatActivity {
         toolbar= findViewById(R.id.toolbar);
         toolbar.setTitle("Text Detection");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imgResult=findViewById(R.id.imgResult);
         btnCapture=findViewById(R.id.btnCapture);
         btnDetect=findViewById(R.id.btnDetect);

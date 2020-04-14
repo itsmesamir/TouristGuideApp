@@ -10,7 +10,7 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -21,29 +21,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mlkit.TextTranslation">
-
-        </activity>
-        <activity android:name=".mlkit.LandmarkDetection">
-        </activity>
+        <activity android:name=".mlkit.Websearch"></activity>
+        <activity android:name=".mlkit.TextTranslation"></activity>
+        <activity android:name=".mlkit.LandmarkDetection"></activity>
         <activity android:name=".mlkit.BarcodeDetection">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="barcode" />
         </activity>
-         <activity android:name=".activities.SplashScreen">
-         <intent-filter>
-         <action android:name="android.intent.action.MAIN" />
-         <category android:name="android.intent.category.LAUNCHER" />
-         </intent-filter>
-         </activity>
+        <activity android:name=".activities.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".mlkit.TextDetection">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="ocr" />
         </activity>
-         <activity android:name=".activities.MainActivity" >
-         </activity>
+        <activity android:name=".activities.MainActivity"></activity>
         <activity android:name=".activities.Map" />
         <activity android:name=".activities.Details" />
         <activity android:name=".activities.LoginActivity" />
